@@ -12,7 +12,7 @@ export const useSocket = () => {
 
   useEffect(() => {
     if (userId && !socket) {
-      const newSocket = io('http://localhost:5001', {
+      const newSocket = io('https://intervue-poll-7g02.onrender.com', {
         withCredentials: true,
         transports: ['websocket', 'polling'],
         autoConnect: true,
