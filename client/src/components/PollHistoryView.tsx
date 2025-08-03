@@ -24,6 +24,8 @@ interface PollHistoryViewProps {
   onBack: () => void;
 }
 
+const BASE_URL = import.meta.env.VITE_BACKEND_URL
+
 const PollHistoryView: React.FC<PollHistoryViewProps> = ({ onBack }) => {
   const [polls, setPolls] = useState<Poll[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,7 +33,7 @@ const PollHistoryView: React.FC<PollHistoryViewProps> = ({ onBack }) => {
   useEffect(() => {
     const fetchPollHistory = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/polls/history');
+        const response = await axios.get(`${BASE_URL}/api/polls/history`);
         setPolls(response.data);
       } catch (error) {
         console.error('Failed to fetch poll history:', error);

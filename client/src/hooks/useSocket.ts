@@ -5,6 +5,8 @@ import { RootState } from '../store/store';
 import { setSocket, setCurrentPoll, updatePollResults, setParticipants, updateParticipantAnswer, setTimeRemaining, endPoll, removeParticipant } from '../store/slices/pollSlice';
 import { addMessage, setMessages } from '../store/slices/chatSlice';
 
+const BASE_URL = import.meta.env.VITE_BACKEND_URL
+
 export const useSocket = () => {
   const dispatch = useDispatch();
   const { userId, userName, userType } = useSelector((state: RootState) => state.auth);
@@ -12,7 +14,7 @@ export const useSocket = () => {
 
   useEffect(() => {
     if (userId && !socket) {
-      const newSocket = io('https://intervue-poll-7g02.onrender.com', {
+      const newSocket = io(`${BASE_URL}`, {
         withCredentials: true,
         transports: ['websocket', 'polling'],
         autoConnect: true,
@@ -96,7 +98,7 @@ export const useSocket = () => {
         newSocket.close();
       };
     }
-  }, [userId, socket, dispatch, userName, userType]);
+  }, [userId]);
 
   return socket;
 };
