@@ -24,7 +24,7 @@ const KickedOutScreen: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="text-[40px] font-normal leading-[100%] text-black mb-4 sora-font whitespace-nowrap"
+          className="text-3xl sm:text-[40px] font-normal leading-[100%] text-black mb-4 sora-font md:whitespace-nowrap"
         >
           You've been Kicked out !
         </motion.h1>
@@ -33,7 +33,7 @@ const KickedOutScreen: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
-          className="text-lg text-[#00000078] mb-8 sora-font max-w-2xl mx-auto"
+          className="text-sm sm:text-lg text-[#00000078] mb-8 sora-font max-w-2xl mx-auto"
         >
           Looks like the teacher had removed you from the poll system. Please try again sometime.
         </motion.p>

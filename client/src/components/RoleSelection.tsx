@@ -19,7 +19,7 @@ const RoleSelection: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-white flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -63,14 +63,16 @@ const RoleSelection: React.FC = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.8, type: 'spring', damping: 20 }}
             whileHover={{ scale: 1.02 }}
-            className={`bg-white rounded-xl p-6 cursor-pointer transition-all border-2 ${
+            className={`rounded-xl cursor-pointer transition-all border-0 duration-75
+              ${
               selectedRole === 'student' 
-                ? 'border-[#1D68BD] border-4 shadow-lg' 
-                : 'border-[#D9D9D9] hover:border-gray-300'
-            }`}
+                ? '[background:linear-gradient(92.24deg,_#7765DA_-8.5%,_#1D68BD_101.3%)] shadow-lg' 
+                : 'bg-[#f0f0f0]'
+            }
+            `}
             onClick={() => handleRoleSelect('student')}
           >
-            <div className=" flex flex-col items-start gap-3">
+            <div className="flex rounded-[10px] flex-col items-start gap-3 p-6 bg-white m-[3px]">
               <h3 className="text-[23px] leading-[100%] !font-semibold text-[#000000]  sora-font">I'm a Student</h3>
               <p className="text-gray-600 text-sm leading-relaxed">
                 Lorem Ipsum is simply dummy text of the printing and typesetting industry
@@ -84,14 +86,16 @@ const RoleSelection: React.FC = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 1, type: 'spring', damping: 20 }}
             whileHover={{ scale: 1.02 }}
-            className={`bg-white rounded-xl p-6 cursor-pointer transition-all border-2 ${
+            className={`rounded-xl cursor-pointer transition-all border-0 duration-75
+              ${
               selectedRole === 'teacher' 
-                ? 'border-[#1D68BD] border-4 shadow-lg' 
-                : 'border-[#D9D9D9] hover:border-gray-300'
-            }`}
+                ? '[background:linear-gradient(92.24deg,_#7765DA_-8.5%,_#1D68BD_101.3%)] shadow-lg' 
+                : 'bg-[#f0f0f0]'
+            }
+            `}
             onClick={() => handleRoleSelect('teacher')}
           >
-            <div className=" flex flex-col items-start gap-3">
+             <div className="flex rounded-[10px] flex-col items-start gap-3 p-6 bg-white m-[3px]">
               <h3 className="text-[23px] leading-[100%] !font-semibold text-[#000000] !sora-font">I'm a Teacher</h3>
               <p className="text-gray-600 text-sm leading-relaxed">
                 Submit answers and view live poll results in real-time.

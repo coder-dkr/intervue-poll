@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store/store";
-import { setMessages, toggleChat } from "../store/slices/chatSlice";
+// import { setMessages, toggleChat } from "../store/slices/chatSlice";
 import { X, Send, Users, MessageCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -104,7 +104,7 @@ const ChatModal: React.FC<ChatPanelProps> = ({ isOpen, onClose }) => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={onClose}
-                className="p-2 hover:bg-purple-700 rounded-full transition-colors"
+                className="p-2 hover:bg-purple-100 rounded-full transition-colors"
               >
                 <X className="h-5 w-5" />
               </motion.button>
@@ -137,6 +137,7 @@ const ChatModal: React.FC<ChatPanelProps> = ({ isOpen, onClose }) => {
                             }`}
                           >
                             <div className="max-w-xs">
+                            <p className="text-[#4F0BD3] font-semibold text-sm mb-1">{msg.userName} </p>
                               <motion.div
                                 whileHover={{ scale: 1.02 }}
                                 className={`p-3 rounded-xl ${
@@ -148,7 +149,7 @@ const ChatModal: React.FC<ChatPanelProps> = ({ isOpen, onClose }) => {
                                 <p className="text-sm">{msg.message}</p>
                               </motion.div>
                               <p className="text-xs text-gray-500 mt-1 px-2">
-                                {msg.userName} •{" "}
+                                {" "}
                                 {new Date(msg.timestamp).toLocaleTimeString()}
                               </p>
                             </div>

@@ -184,7 +184,7 @@ const PollView: React.FC = () => {
                         ? "cursor-default"
                         : ""
                     }`}
-                    onClick={() => setSelectedOption(option.id)}
+                    onClick={() => userType === "student" && setSelectedOption(option.id)}
                   >
                     {/* Progress Bar - now with w-full */}
                     {showResults && (

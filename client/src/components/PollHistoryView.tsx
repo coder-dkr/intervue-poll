@@ -74,7 +74,7 @@ const PollHistoryView: React.FC<PollHistoryViewProps> = ({ onBack }) => {
   }
 
   return (
-    <div className="min-h-screen bg-white p-4">
+    <div className="min-h-screen bg-white p-4 custom-scroll-container">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <motion.div
@@ -234,6 +234,44 @@ const PollHistoryView: React.FC<PollHistoryViewProps> = ({ onBack }) => {
 
       {/* Chat Panel */}
       <ChatModal isOpen={isOpen} onClose={() => dispatch(toggleChat())} />
+
+      <style jsx>{`
+      /* Hide default scrollbar */
+      ::-webkit-scrollbar {
+        width: 0;
+        background: transparent;
+      }
+
+      /* Custom scrollbar container */
+      .custom-scroll-container {
+        scrollbar-width: thin;
+        scrollbar-color: #6766D5 #f1f1f1;
+      }
+
+      /* Custom scrollbar for WebKit browsers */
+      .custom-scroll-container::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+
+      .custom-scroll-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+      }
+
+      .custom-scroll-container::-webkit-scrollbar-thumb {
+        background-color: #6766D5;
+        border-radius: 10px;
+      }
+
+      /* For Firefox */
+      @supports (scrollbar-width: thin) {
+        .custom-scroll-container {
+          scrollbar-width: thin;
+          scrollbar-color: #6766D5 #f1f1f1;
+        }
+      }
+    `}</style>
     </div>
   );
 };
