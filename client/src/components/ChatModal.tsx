@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../store/store';
-import { setMessages, toggleChat } from '../store/slices/chatSlice';
-import { X, Send, Users, MessageCircle } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useRef, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../store/store";
+import { setMessages, toggleChat } from "../store/slices/chatSlice";
+import { X, Send, Users, MessageCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface ChatPanelProps {
   isOpen: boolean;
@@ -12,16 +12,20 @@ interface ChatPanelProps {
 
 const ChatModal: React.FC<ChatPanelProps> = ({ isOpen, onClose }) => {
   const dispatch = useDispatch();
-  const [message, setMessage] = useState('');
-  const [activeTab, setActiveTab] = useState<'chat' | 'participants'>('chat');
+  const [message, setMessage] = useState("");
+  const [activeTab, setActiveTab] = useState<"chat" | "participants">("chat");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
+
   const { messages } = useSelector((state: RootState) => state.chat);
-  const { participants, socket } = useSelector((state: RootState) => state.poll);
-  const { userName, userType, userId } = useSelector((state: RootState) => state.auth);
+  const { participants, socket } = useSelector(
+    (state: RootState) => state.poll
+  );
+  const { userName, userType, userId } = useSelector(
+    (state: RootState) => state.auth
+  );
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -31,19 +35,19 @@ const ChatModal: React.FC<ChatPanelProps> = ({ isOpen, onClose }) => {
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (message.trim() && socket) {
-      socket.emit('chatMessage', {
+      socket.emit("chatMessage", {
         message: message.trim(),
         userId,
         userName,
         userType,
       });
-      setMessage('');
+      setMessage("");
     }
   };
 
   const handleRemoveParticipant = (participantId: string) => {
-    if (socket && userType === 'teacher') {
-      socket.emit('removeParticipant', participantId);
+    if (socket && userType === "teacher") {
+      socket.emit("removeParticipant", participantId);
     }
   };
 
@@ -59,13 +63,13 @@ const ChatModal: React.FC<ChatPanelProps> = ({ isOpen, onClose }) => {
             className="fixed h-svh inset-0 bg-black bg-opacity-50 z-40 md:hidden"
             onClick={onClose}
           />
-          
+
           {/* Chat Panel */}
           <motion.div
-            initial={{ x: '100%', opacity: 0 }}
+            initial={{ x: "100%", opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: '100%', opacity: 0 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            exit={{ x: "100%", opacity: 0 }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
             className="fixed inset-y-0 top-[20%] sm:top-[36%] right-0 ml-2 sm:right-16 md:right-20 xl:right-28 h-[600px] sm:h-[500px] w-full sm:w-[27rem] bg-white shadow-[4px_4px_20px_0px_#00000040] rounded-2xl overflow-hidden z-50 flex flex-col"
           >
             {/* Header */}
@@ -73,9 +77,11 @@ const ChatModal: React.FC<ChatPanelProps> = ({ isOpen, onClose }) => {
               <div className="flex space-x-1">
                 <motion.button
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => setActiveTab('chat')}
+                  onClick={() => setActiveTab("chat")}
                   className={`flex items-center space-x-2 px-4 py-2 border-b-1 bg-white  text-sm font-medium transition-all ${
-                    activeTab === 'chat' ? 'border-b-2 border-[#8F64E1]' : 'hover:text-gray-700'
+                    activeTab === "chat"
+                      ? "border-b-2 border-[#8F64E1]"
+                      : "hover:text-gray-700"
                   }`}
                 >
                   <MessageCircle className="hidden sm:inline-block h-4 w-4" />
@@ -83,9 +89,11 @@ const ChatModal: React.FC<ChatPanelProps> = ({ isOpen, onClose }) => {
                 </motion.button>
                 <motion.button
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => setActiveTab('participants')}
-                   className={`flex items-center space-x-2 px-4 py-2 border-b-1  text-sm font-medium transition-all bg-white  ${
-                     activeTab === 'participants' ? 'border-b-2 border-[#8F64E1]' : 'hover:text-gray-700'
+                  onClick={() => setActiveTab("participants")}
+                  className={`flex items-center space-x-2 px-4 py-2 border-b-1  text-sm font-medium transition-all bg-white  ${
+                    activeTab === "participants"
+                      ? "border-b-2 border-[#8F64E1]"
+                      : "hover:text-gray-700"
                   }`}
                 >
                   <Users className="hidden sm:inline-block h-4 w-4" />
@@ -105,7 +113,7 @@ const ChatModal: React.FC<ChatPanelProps> = ({ isOpen, onClose }) => {
             {/* Content */}
             <div className="flex-1 flex flex-col overflow-y-auto">
               <AnimatePresence mode="wait">
-                {activeTab === 'chat' ? (
+                {activeTab === "chat" ? (
                   <motion.div
                     key="chat"
                     initial={{ opacity: 0, x: -20 }}
@@ -122,21 +130,26 @@ const ChatModal: React.FC<ChatPanelProps> = ({ isOpen, onClose }) => {
                             initial={{ opacity: 0, y: 20, scale: 0.8 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             transition={{ delay: index * 0.05 }}
-                            className={`flex ${msg.userId === userId ? 'justify-end' : 'justify-start'}`}
+                            className={`flex ${
+                              msg.userId === userId
+                                ? "justify-end"
+                                : "justify-start"
+                            }`}
                           >
                             <div className="max-w-xs">
                               <motion.div
                                 whileHover={{ scale: 1.02 }}
                                 className={`p-3 rounded-xl ${
                                   msg.userId === userId
-                                    ? 'bg-[#8F64E1] text-white rounded-tr-none'
-                                    : 'bg-[#3A3A3B] text-white rounded-tl-none'
+                                    ? "bg-[#8F64E1] text-white rounded-tr-none"
+                                    : "bg-[#3A3A3B] text-white rounded-tl-none"
                                 }`}
                               >
                                 <p className="text-sm">{msg.message}</p>
                               </motion.div>
                               <p className="text-xs text-gray-500 mt-1 px-2">
-                                {msg.userName} • {new Date(msg.timestamp).toLocaleTimeString()}
+                                {msg.userName} •{" "}
+                                {new Date(msg.timestamp).toLocaleTimeString()}
                               </p>
                             </div>
                           </motion.div>
@@ -185,6 +198,16 @@ const ChatModal: React.FC<ChatPanelProps> = ({ isOpen, onClose }) => {
                         <span>Name</span>
                         <span>Action</span>
                       </div>
+                      <div className="flex justify-between items-center text-sm text-gray-600 font-medium  pb-2">
+                        <span className="flex items-center justify-center gap-2">
+                          <div className="w-3 h-3 rounded-full bg-[#10B981]" />
+                          Answered
+                        </span>
+                        <span className="flex items-center justify-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-[#D1D5DB]" />
+                          Not Answered
+                        </span>
+                      </div>
                       <AnimatePresence>
                         {participants.map((participant, index) => (
                           <motion.div
@@ -198,24 +221,33 @@ const ChatModal: React.FC<ChatPanelProps> = ({ isOpen, onClose }) => {
                             <div className="flex items-center space-x-3">
                               <motion.div
                                 animate={{
-                                  scale: participant.hasAnswered ? [1, 1.2, 1] : 1,
-                                  backgroundColor: participant.hasAnswered ? '#10B981' : '#D1D5DB'
+                                  scale: participant.hasAnswered
+                                    ? [1, 1.2, 1]
+                                    : 1,
+                                  backgroundColor: participant.hasAnswered
+                                    ? "#10B981"
+                                    : "#D1D5DB",
                                 }}
                                 transition={{ duration: 0.3 }}
                                 className="w-3 h-3 rounded-full"
                               />
-                              <span className="font-medium text-gray-900">{participant.name}</span>
+                              <span className="font-medium text-gray-900">
+                                {participant.name}
+                              </span>
                             </div>
-                            {userType === 'teacher' && participant.id !== userId && (
-                              <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={() => handleRemoveParticipant(participant.id)}
-                                className="text-blue-500 hover:text-blue-700 text-sm font-medium px-3 py-1 rounded-full hover:bg-blue-50 transition-colors"
-                              >
-                                Kick out
-                              </motion.button>
-                            )}
+                            {userType === "teacher" &&
+                              participant.id !== userId && (
+                                <motion.button
+                                  whileHover={{ scale: 1.05 }}
+                                  whileTap={{ scale: 0.95 }}
+                                  onClick={() =>
+                                    handleRemoveParticipant(participant.id)
+                                  }
+                                  className="text-blue-500 hover:text-blue-700 text-sm font-medium px-3 py-1 rounded-full hover:bg-blue-50 transition-colors"
+                                >
+                                  Kick out
+                                </motion.button>
+                              )}
                           </motion.div>
                         ))}
                       </AnimatePresence>

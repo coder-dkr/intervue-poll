@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Clock, Users } from 'lucide-react';
+import { ArrowLeft, Check, Clock, Users } from 'lucide-react';
 import axios from 'axios';
-import ChatModal from './ChatModal';
-import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../store/store";
-import { toggleChat } from "../store/slices/chatSlice";
+import { useDispatch, useSelector } from 'react-redux';
+import ChatModal from './ChatModal';
+import { toggleChat } from '../store/slices/chatSlice';
 
 interface PollOption {
   id: string;
@@ -31,8 +31,8 @@ interface PollHistoryViewProps {
 const BASE_URL = import.meta.env.VITE_BACKEND_URL
 
 const PollHistoryView: React.FC<PollHistoryViewProps> = ({ onBack }) => {
-  const [polls, setPolls] = useState<Poll[]>([]);
   const dispatch = useDispatch();
+  const [polls, setPolls] = useState<Poll[]>([]);
   const [loading, setLoading] = useState(true);
   const { isOpen } = useSelector((state: RootState) => state.chat);
   const { participants } =
@@ -74,7 +74,7 @@ const PollHistoryView: React.FC<PollHistoryViewProps> = ({ onBack }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
+    <div className="min-h-screen bg-white p-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <motion.div
@@ -102,92 +102,104 @@ const PollHistoryView: React.FC<PollHistoryViewProps> = ({ onBack }) => {
               
               return (
                 <motion.div
-                  key={poll.id}
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: pollIndex * 0.1 }}
-                  className="bg-white rounded-2xl shadow-xl overflow-hidden"
-                >
-                  {/* Poll Header */}
-                  <div className="bg-gray-800 px-6 py-4">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                      <h3 className="text-white text-lg font-semibold mb-2 sm:mb-0">
-                        Question {pollIndex + 1}
-                      </h3>
-                      <div className="flex items-center space-x-4 text-gray-300 text-sm">
-                        <div className="flex items-center space-x-1">
-                          <Clock className="h-4 w-4" />
-                          <span>{poll.timeLimit}s</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <Users className="h-4 w-4" />
-                          <span>{totalVotes} votes</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
+                key={poll.id}
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: pollIndex * 0.1 }}
+                className="p-6 border-b last:border-b-0"
+              >
                   {/* Question */}
-                  <div className="p-6">
-                    <div className="bg-gray-800 text-white p-4 rounded-lg mb-6">
-                      <h4 className="text-lg font-medium">{poll.question}</h4>
-                    </div>
+                  <div className="mb-4">
+                  <h4 className="text-lg font-medium text-gray-800">Question {pollIndex + 1}</h4>
+                </div>
 
-                    {/* Options with Results */}
-                    <div className="space-y-3">
-                      {poll.options.map((option, index) => {
-                        const percentage = getVotePercentage(option.votes, totalVotes);
+                <div className='bg-white rounded-lg overflow-hidden'>
+                {/* Question Header */}
+                <div className="bg-[linear-gradient(90deg,_#343434_0%,_#6E6E6E_100%)] text-white p-4 rounded-t-lg ">
+                  <h3 className="text-lg font-semibold">{poll.question}</h3>
+                </div>
+                {/* Options with Results */}
+                <div className="space-y-3 p-5 border-2 border-t-0 rounded-b-lg border-[#6766D5]">
+                  {poll.options.map((option, index) => {
+                    const percentage = getVotePercentage(option.votes, totalVotes);
+                    const isSelected = option.isCorrect;
+                    
+                    return (
+                      <motion.div
+                        key={option.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: (pollIndex * 0.1) + (index * 0.05) }}
+                        className={`relative bg-white overflow-hidden rounded-xl border-2 ${
+                          isSelected
+                            ? "border-[#6766D5] bg-purple-50"
+                            : "border-gray-200"
+                        }`}
+                      >
+                        {/* Progress Bar */}
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${percentage}%` }}
+                          transition={{ duration: 1, delay: (pollIndex * 0.1) + (index * 0.1) }}
+                          className="absolute inset-0 bg-[#6766D5] overflow-hidden"
+                        >
+                          <span className="font-medium text-white whitespace-nowrap text-lg z-20 absolute top-1/2 -translate-y-1/2 left-[4.5rem]">
+                            {option.text}
+                          </span>
+                        </motion.div>
                         
-                        return (
-                          <motion.div
-                            key={option.id}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: (pollIndex * 0.1) + (index * 0.05) }}
-                            className="relative overflow-hidden rounded-xl border-2 border-gray-200"
-                          >
-                            {/* Progress Bar */}
+                        {/* Option Content */}
+                        <div className="relative flex items-center justify-between p-4">
+                          <div className="flex items-center space-x-4">
                             <motion.div
-                              initial={{ width: 0 }}
-                              animate={{ width: `${percentage}%` }}
-                              transition={{ duration: 1, delay: (pollIndex * 0.1) + (index * 0.1) }}
-                              className="absolute inset-0 bg-purple-100"
-                            />
-                            
-                            {/* Option Content */}
-                            <div className="relative flex items-center justify-between p-4">
-                              <div className="flex items-center space-x-3">
-                                <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center text-sm font-semibold">
-                                  {index + 1}
-                                </div>
-                                <span className="font-medium text-gray-900">{option.text}</span>
-                                {option.isCorrect && (
-                                  <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">
-                                    Correct
-                                  </span>
-                                )}
-                              </div>
-                              <div className="flex items-center space-x-3">
-                                <span className="text-sm text-gray-600">{option.votes} votes</span>
-                                <span className="font-bold text-purple-600 text-lg">{percentage}%</span>
-                              </div>
-                            </div>
-                          </motion.div>
-                        );
-                      })}
-                    </div>
+                              className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold ${
+                                isSelected ? "bg-purple-600" : "bg-gray-400"
+                              }`}
+                            >
+                              {index + 1}
+                            </motion.div>
+                            <span className="font-medium text-gray-900 text-lg z-10 flex-1">
+                              {option.text}
+                            </span>
+                            {isSelected && (
+                              <span className="bg-green-100 text-green-800 text-xs px-1 py-1 rounded-full font-medium">
+                                <Check size={14} />
+                              </span>
+                            )}
+                          </div>
 
-                    {/* Poll Metadata */}
-                    <div className="mt-6 pt-4 border-t border-gray-200">
-                      <div className="flex flex-col sm:flex-row sm:justify-between text-sm text-gray-500">
-                        <span>Created: {new Date(poll.createdAt).toLocaleString()}</span>
-                        {poll.endTime && (
-                          <span>Ended: {new Date(poll.endTime).toLocaleString()}</span>
-                        )}
-                      </div>
+                          <div className="flex items-center space-x-4">
+                            <span className="text-sm text-gray-600 whitespace-nowrap">
+                              {option.votes} votes
+                            </span>
+                            <span className="font-bold text-purple-600 text-xl">
+                              {percentage}%
+                            </span>
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+                </div>
+
+                {/* Poll Metadata */}
+                <div className="mt-4 pt-4 border-t border-gray-200 text-sm text-gray-500">
+                  <div className="flex justify-between">
+                    <span>Created: {new Date(poll.createdAt).toLocaleString()}</span>
+                    <div className="flex items-center space-x-3">
+                      <span className="flex items-center space-x-1">
+                        <Clock size={14} />
+                        <span>{poll.timeLimit}s</span>
+                      </span>
+                      <span className="flex items-center space-x-1">
+                        <Users size={14} />
+                        <span>{totalVotes} votes</span>
+                      </span>
                     </div>
                   </div>
-                </motion.div>
+                </div>
+              </motion.div>
               );
             })}
           </AnimatePresence>
@@ -204,7 +216,9 @@ const PollHistoryView: React.FC<PollHistoryViewProps> = ({ onBack }) => {
         </div>
       </div>
 
-      <motion.button
+      
+         {/* Chat Button */}
+         <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => dispatch(toggleChat())}

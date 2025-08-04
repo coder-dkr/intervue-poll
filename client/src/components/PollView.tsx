@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store/store";
 import { setCurrentPoll, setUserAnswer } from "../store/slices/pollSlice";
 import { toggleChat } from "../store/slices/chatSlice";
-import { Clock, Users, MessageCircle, Eye, Plus, Check } from "lucide-react";
+import { Clock, Eye, Plus, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ChatModal from "./ChatModal";
 import PollHistoryView from "./PollHistoryView";
@@ -118,16 +118,16 @@ const PollView: React.FC = () => {
   return (
     <div className="min-h-screen bg-white flex items-center justify-center p-4">
       {userType === "teacher" && (
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setShowHistory(true)}
-              className="absolute right-1/4 top-4 flex items-center space-x-2 bg-purple-600 text-white px-4 py-2 rounded-full hover:bg-purple-700 transition-colors"
-            >
-              <Eye className="h-4 w-4" />
-              <span>View Poll history</span>
-            </motion.button>
-          )}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setShowHistory(true)}
+          className="absolute right-1/4 top-4 flex items-center space-x-2 bg-purple-600 text-white px-4 py-2 rounded-full hover:bg-purple-700 transition-colors"
+        >
+          <Eye className="h-4 w-4" />
+          <span>View Poll history</span>
+        </motion.button>
+      )}
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <motion.div
@@ -144,8 +144,6 @@ const PollView: React.FC = () => {
               <span>{formatTime(timeRemaining)}</span>
             </div>
           </div>
-
-          
         </motion.div>
 
         {/* Question Card */}
@@ -168,7 +166,8 @@ const PollView: React.FC = () => {
                 const percentage = getVotePercentage(option.votes);
                 const isSelected =
                   selectedOption === option.id || userAnswer === option.id;
-                const showResults = !currentPoll.isActive || userAnswer || (userType === 'teacher');
+                const showResults =
+                  !currentPoll.isActive || userAnswer || userType === "teacher";
 
                 return (
                   <motion.div
@@ -178,15 +177,14 @@ const PollView: React.FC = () => {
                     transition={{ delay: index * 0.1 }}
                     className={`relative overflow-hidden rounded-xl border-2 cursor-pointer transition-all w-full ${
                       isSelected
-                        ? "border-[#6766D5] bg-purple-50"
-                        : "border-gray-200 hover:border-[#6766D5]"
+                        ? "border-[#6766D5]"
+                        : "border-gray-200 hover:border-[#8583f3]"
                     } ${
                       !currentPoll.isActive || userAnswer
                         ? "cursor-default"
                         : ""
                     }`}
-                    // onClick={() => handleOptionSelect(option.id)}
-                    onClick={() =>  setSelectedOption(option.id)}
+                    onClick={() => setSelectedOption(option.id)}
                   >
                     {/* Progress Bar - now with w-full */}
                     {showResults && (
@@ -208,7 +206,7 @@ const PollView: React.FC = () => {
                         <motion.div
                           whileHover={{ scale: 1.1 }}
                           className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold ${
-                            isSelected ? "bg-purple-600" : "bg-gray-400"
+                            isSelected ? "bg-[#8F64E1]" : "bg-gray-400"
                           }`}
                         >
                           {index + 1}
@@ -242,29 +240,41 @@ const PollView: React.FC = () => {
         </motion.div>
 
         {/* Bottom Section */}
-        <div className={`flex ${userType === "student" ? (currentPoll.isActive ? "justify-end" : "justify-center") : "justify-end"}`}>
-        {userType === "student" && currentPoll.isActive && (
-                <motion.button
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  disabled={selectedOption === null}
-                  onClick={() => selectedOption !== null && handleOptionSelect(selectedOption)}
-                  className="flex items-center px-20  bg-[linear-gradient(99.18deg,_#8F64E1_-46.89%,_#1D68BD_223.45%)] hover:opacity-90  text-white py-3 rounded-full transition-colors mx-auto"
-                >
-                  <span>Submit</span>
-                </motion.button>
-              )}
+        <div
+          className={`flex ${
+            userType === "student"
+              ? currentPoll.isActive
+                ? "justify-end"
+                : "justify-center"
+              : "justify-end"
+          }`}
+        >
+          {userType === "student" && currentPoll.isActive && (
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              disabled={selectedOption === null}
+              onClick={() =>
+                selectedOption !== null && handleOptionSelect(selectedOption)
+              }
+              className="flex items-center px-20  bg-[linear-gradient(99.18deg,_#8F64E1_-46.89%,_#1D68BD_223.45%)] hover:opacity-90  text-white py-3 rounded-full transition-colors"
+            >
+              <span>Submit</span>
+            </motion.button>
+          )}
           {!currentPoll.isActive ? (
             <div className="text-center">
-              {userType === "student" && <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-lg text-gray-600 mb-6"
-              >
-                Wait for the teacher to ask a new question..
-              </motion.p>}
+              {userType === "student" && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-lg text-gray-600 mb-6"
+                >
+                  Wait for the teacher to ask a new question..
+                </motion.p>
+              )}
 
               {userType === "teacher" && (
                 <motion.button

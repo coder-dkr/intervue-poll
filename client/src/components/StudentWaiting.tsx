@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store/store';
 import { toggleChat } from '../store/slices/chatSlice';
-import { Loader2, MessageCircle } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ChatModal from './ChatModal';
 import IntervueHeader from './IntervueHeader';
@@ -66,9 +66,9 @@ const StudentWaiting: React.FC = () => {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => dispatch(toggleChat())}
-        className="fixed bottom-6 right-6 bg-purple-600 text-white p-4 rounded-full shadow-lg hover:bg-purple-700 transition-colors"
+        className="fixed bottom-6 right-6 bg-[#5767D0] text-white p-4 rounded-full shadow-lg hover:opacity-90 transition-colors"
       >
-        <MessageCircle className="h-6 w-6" />
+       <img src="/chaticon.svg" alt="chat icon" className="w-6 h-6" />
         {participants.length > 0 && (
           <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center">
             {participants.length}
