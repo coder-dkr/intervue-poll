@@ -36,7 +36,7 @@ const StudentNameEntry: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-[40px] whitespace-nowrap text-gray-900 mb-1 sora-font"
+            className="text-3xl md:text-[40px] md:whitespace-nowrap text-gray-900 mb-4 sora-font"
           >
             Let's <span className="text-black font-semibold">Get Started</span>
           </motion.h1>
@@ -45,7 +45,7 @@ const StudentNameEntry: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="text-[17px] w-full text-[#00000074] mx-auto sora-font"
+            className="text-sm md:text-[17px] w-full text-[#00000074] mx-auto sora-font"
           >
             If you're a student, you'll be able to{" "}
             <span className="text-black">submit your answers</span>, participate

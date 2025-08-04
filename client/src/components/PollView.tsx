@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store/store";
-import { setUserAnswer } from "../store/slices/pollSlice";
+import { setCurrentPoll, setUserAnswer } from "../store/slices/pollSlice";
 import { toggleChat } from "../store/slices/chatSlice";
 import { Clock, Users, MessageCircle, Eye, Plus, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import ChatPanel from "./ChatPanel";
+import ChatModal from "./ChatModal";
 import PollHistoryView from "./PollHistoryView";
 
 // const dummyPoll = {
@@ -76,8 +76,8 @@ const PollView: React.FC = () => {
 
   const handleNewQuestion = () => {
     if (socket && userType === "teacher") {
-      // This will redirect back to teacher dashboard
-      window.location.reload();
+      // window.location.reload();
+      dispatch(setCurrentPoll(null));
     }
   };
 
@@ -117,6 +117,17 @@ const PollView: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center p-4">
+      {userType === "teacher" && (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setShowHistory(true)}
+              className="absolute right-1/4 top-4 flex items-center space-x-2 bg-purple-600 text-white px-4 py-2 rounded-full hover:bg-purple-700 transition-colors"
+            >
+              <Eye className="h-4 w-4" />
+              <span>View Poll history</span>
+            </motion.button>
+          )}
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <motion.div
@@ -134,38 +145,30 @@ const PollView: React.FC = () => {
             </div>
           </div>
 
-          {userType === "teacher" && (
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setShowHistory(true)}
-              className="flex items-center space-x-2 bg-purple-600 text-white px-4 py-2 rounded-full hover:bg-purple-700 transition-colors"
-            >
-              <Eye className="h-4 w-4" />
-              <span>View Poll history</span>
-            </motion.button>
-          )}
+          
         </motion.div>
 
         {/* Question Card */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white rounded-2xl shadow-xl overflow-hidden mb-8"
+          className="bg-white rounded-2xl md:w-[727px] shadow-sm overflow-hidden mb-8"
         >
-          {/* Question Header */}
-          <div className="bg-gray-800 text-white p-6">
-            <h2 className="text-xl font-semibold">{currentPoll.question}</h2>
+          {/* Question Header - now with w-full */}
+          <div className="bg-[linear-gradient(90deg,_#343434_0%,_#6E6E6E_100%)] text-white p-6 w-full">
+            <h2 className="text-xl font-semibold w-full">
+              {currentPoll.question}
+            </h2>
           </div>
 
-          {/* Options */}
-          <div className="p-6 space-y-4">
+          {/* Options Container - now with w-full */}
+          <div className="p-6 space-y-4 w-full border-2 border-t-0 border-[#7765DA] rounded-b-2xl">
             <AnimatePresence>
               {currentPoll.options.map((option, index) => {
                 const percentage = getVotePercentage(option.votes);
                 const isSelected =
                   selectedOption === option.id || userAnswer === option.id;
-                const showResults = !currentPoll.isActive || userAnswer;
+                const showResults = !currentPoll.isActive || userAnswer || (userType === 'teacher');
 
                 return (
                   <motion.div
@@ -173,7 +176,7 @@ const PollView: React.FC = () => {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className={`relative overflow-hidden rounded-xl border-2 cursor-pointer transition-all ${
+                    className={`relative overflow-hidden rounded-xl border-2 cursor-pointer transition-all w-full ${
                       isSelected
                         ? "border-[#6766D5] bg-purple-50"
                         : "border-gray-200 hover:border-[#6766D5]"
@@ -182,15 +185,16 @@ const PollView: React.FC = () => {
                         ? "cursor-default"
                         : ""
                     }`}
-                    onClick={() => handleOptionSelect(option.id)}
+                    // onClick={() => handleOptionSelect(option.id)}
+                    onClick={() =>  setSelectedOption(option.id)}
                   >
-                    {/* Progress Bar */}
+                    {/* Progress Bar - now with w-full */}
                     {showResults && (
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${percentage}%` }}
                         transition={{ duration: 1, delay: index * 0.1 }}
-                        className="absolute inset-0 bg-[#6766D5] overflow-hidden"
+                        className="absolute inset-0 bg-[#6766D5] overflow-hidden w-full"
                       >
                         <span className="font-medium text-white whitespace-nowrap text-lg z-20 absolute top-1/2 -translate-y-1/2 left-[4.5rem] md:left-[4.5rem]">
                           {option.text}
@@ -198,9 +202,9 @@ const PollView: React.FC = () => {
                       </motion.div>
                     )}
 
-                    {/* Option Content */}
-                    <div className="relative flex items-center justify-between p-4">
-                      <div className="flex items-center space-x-4">
+                    {/* Option Content - now with w-full */}
+                    <div className="relative flex items-center justify-between p-4 w-full">
+                      <div className="flex items-center space-x-4 w-full">
                         <motion.div
                           whileHover={{ scale: 1.1 }}
                           className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold ${
@@ -209,7 +213,7 @@ const PollView: React.FC = () => {
                         >
                           {index + 1}
                         </motion.div>
-                        <span className="font-medium text-gray-900 text-lg z-10">
+                        <span className="font-medium text-gray-900 text-lg z-10 flex-1">
                           {option.text}
                         </span>
                         {!currentPoll.isActive && option.isCorrect && (
@@ -221,7 +225,7 @@ const PollView: React.FC = () => {
 
                       {showResults && (
                         <div className="flex items-center space-x-4">
-                          <span className="text-sm text-gray-600 hidden md:inline-block">
+                          <span className="text-sm text-gray-600 hidden md:inline-block whitespace-nowrap">
                             {option.votes} votes
                           </span>
                           <span className="font-bold text-purple-600 text-xl">
@@ -238,18 +242,29 @@ const PollView: React.FC = () => {
         </motion.div>
 
         {/* Bottom Section */}
-        <div className="flex justify-center">
+        <div className={`flex ${userType === "student" ? (currentPoll.isActive ? "justify-end" : "justify-center") : "justify-end"}`}>
+        {userType === "student" && currentPoll.isActive && (
+                <motion.button
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  disabled={selectedOption === null}
+                  onClick={() => selectedOption !== null && handleOptionSelect(selectedOption)}
+                  className="flex items-center px-20  bg-[linear-gradient(99.18deg,_#8F64E1_-46.89%,_#1D68BD_223.45%)] hover:opacity-90  text-white py-3 rounded-full transition-colors mx-auto"
+                >
+                  <span>Submit</span>
+                </motion.button>
+              )}
           {!currentPoll.isActive ? (
             <div className="text-center">
-              <motion.p
+              {userType === "student" && <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="text-lg text-gray-600 mb-6"
               >
-                {userType === "teacher"
-                  ? "Poll has ended. You can now ask a new question."
-                  : "Wait for the teacher to ask a new question.."}
-              </motion.p>
+                Wait for the teacher to ask a new question..
+              </motion.p>}
 
               {userType === "teacher" && (
                 <motion.button
@@ -258,7 +273,7 @@ const PollView: React.FC = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleNewQuestion}
-                  className="flex items-center space-x-2 bg-purple-600 text-white px-6 py-3 rounded-full hover:bg-purple-700 transition-colors mx-auto"
+                  className="flex items-center space-x-2  bg-[linear-gradient(99.18deg,_#8F64E1_-46.89%,_#1D68BD_223.45%)] hover:opacity-90  text-white px-6 py-3 rounded-full transition-colors mx-auto"
                 >
                   <Plus className="h-5 w-5" />
                   <span>Ask a new question</span>
@@ -284,9 +299,9 @@ const PollView: React.FC = () => {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => dispatch(toggleChat())}
-        className="fixed bottom-6 right-6 bg-purple-600 text-white p-4 rounded-full shadow-lg hover:bg-purple-700 transition-colors z-30"
+        className="fixed bottom-12 right-4 sm:right-16 bg-[#5767D0] text-white p-4 rounded-full shadow-lg hover:opacity-90 transition-colors z-30"
       >
-        <MessageCircle className="h-6 w-6" />
+        <img src="/chaticon.svg" alt="chat icon" className="w-6 h-6" />
         {participants.length > 0 && (
           <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center">
             {participants.length}
@@ -295,7 +310,7 @@ const PollView: React.FC = () => {
       </motion.button>
 
       {/* Chat Panel */}
-      <ChatPanel isOpen={isOpen} onClose={() => dispatch(toggleChat())} />
+      <ChatModal isOpen={isOpen} onClose={() => dispatch(toggleChat())} />
     </div>
   );
 };

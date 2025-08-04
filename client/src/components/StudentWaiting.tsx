@@ -4,7 +4,7 @@ import { RootState } from '../store/store';
 import { toggleChat } from '../store/slices/chatSlice';
 import { Loader2, MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
-import ChatPanel from './ChatPanel';
+import ChatModal from './ChatModal';
 import IntervueHeader from './IntervueHeader';
 
 const StudentWaiting: React.FC = () => {
@@ -77,7 +77,7 @@ const StudentWaiting: React.FC = () => {
       </motion.button>
 
       {/* Chat Panel */}
-      <ChatPanel isOpen={isOpen} onClose={() => dispatch(toggleChat())} />
+      <ChatModal isOpen={isOpen} onClose={() => dispatch(toggleChat())} />
     </div>
   );
 };

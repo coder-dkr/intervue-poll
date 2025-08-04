@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store/store';
-import { toggleChat } from '../store/slices/chatSlice';
+import { setMessages, toggleChat } from '../store/slices/chatSlice';
 import { X, Send, Users, MessageCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -10,7 +10,7 @@ interface ChatPanelProps {
   onClose: () => void;
 }
 
-const ChatPanel: React.FC<ChatPanelProps> = ({ isOpen, onClose }) => {
+const ChatModal: React.FC<ChatPanelProps> = ({ isOpen, onClose }) => {
   const dispatch = useDispatch();
   const [message, setMessage] = useState('');
   const [activeTab, setActiveTab] = useState<'chat' | 'participants'>('chat');
@@ -56,7 +56,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ isOpen, onClose }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+            className="fixed h-svh inset-0 bg-black bg-opacity-50 z-40 md:hidden"
             onClick={onClose}
           />
           
@@ -66,31 +66,29 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ isOpen, onClose }) => {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: '100%', opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-y-0 right-0 w-full md:w-96 bg-white shadow-2xl z-50 flex flex-col"
+            className="fixed inset-y-0 top-[20%] sm:top-[36%] right-0 ml-2 sm:right-16 md:right-20 xl:right-28 h-[600px] sm:h-[500px] w-full sm:w-[27rem] bg-white shadow-[4px_4px_20px_0px_#00000040] rounded-2xl overflow-hidden z-50 flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b bg-purple-600 text-white">
+            <div className="flex items-center justify-between p-4 pb-0 border-b bg-white text-black">
               <div className="flex space-x-1">
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setActiveTab('chat')}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                    activeTab === 'chat' ? 'bg-white text-purple-600' : 'hover:bg-purple-700'
+                  className={`flex items-center space-x-2 px-4 py-2 border-b-1 bg-white  text-sm font-medium transition-all ${
+                    activeTab === 'chat' ? 'border-b-2 border-[#8F64E1]' : 'hover:text-gray-700'
                   }`}
                 >
-                  <MessageCircle className="h-4 w-4" />
+                  <MessageCircle className="hidden sm:inline-block h-4 w-4" />
                   <span>Chat</span>
                 </motion.button>
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setActiveTab('participants')}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                    activeTab === 'participants' ? 'bg-white text-purple-600' : 'hover:bg-purple-700'
+                   className={`flex items-center space-x-2 px-4 py-2 border-b-1  text-sm font-medium transition-all bg-white  ${
+                     activeTab === 'participants' ? 'border-b-2 border-[#8F64E1]' : 'hover:text-gray-700'
                   }`}
                 >
-                  <Users className="h-4 w-4" />
+                  <Users className="hidden sm:inline-block h-4 w-4" />
                   <span>Participants</span>
                 </motion.button>
               </div>
@@ -105,7 +103,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ isOpen, onClose }) => {
             </div>
 
             {/* Content */}
-            <div className="flex-1 flex flex-col overflow-hidden">
+            <div className="flex-1 flex flex-col overflow-y-auto">
               <AnimatePresence mode="wait">
                 {activeTab === 'chat' ? (
                   <motion.div
@@ -116,23 +114,23 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ isOpen, onClose }) => {
                     className="flex-1 flex flex-col"
                   >
                     {/* Messages */}
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                    <div className="flex-1 overflow-y-auto p-4 space-y-4 mb-16">
                       <AnimatePresence>
                         {messages.map((msg, index) => (
                           <motion.div
                             key={msg.id}
                             initial={{ opacity: 0, y: 20, scale: 0.8 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
-                            transition={{ delay: index * 0.1 }}
+                            transition={{ delay: index * 0.05 }}
                             className={`flex ${msg.userId === userId ? 'justify-end' : 'justify-start'}`}
                           >
                             <div className="max-w-xs">
                               <motion.div
                                 whileHover={{ scale: 1.02 }}
-                                className={`p-3 rounded-2xl ${
+                                className={`p-3 rounded-xl ${
                                   msg.userId === userId
-                                    ? 'bg-purple-600 text-white rounded-br-md'
-                                    : 'bg-gray-100 text-gray-900 rounded-bl-md'
+                                    ? 'bg-[#8F64E1] text-white rounded-tr-none'
+                                    : 'bg-[#3A3A3B] text-white rounded-tl-none'
                                 }`}
                               >
                                 <p className="text-sm">{msg.message}</p>
@@ -152,7 +150,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ isOpen, onClose }) => {
                       initial={{ y: 50, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       onSubmit={handleSendMessage}
-                      className="p-4 border-t bg-gray-50"
+                      className="p-4 absolute bottom-0 w-full border-t bg-gray-50"
                     >
                       <div className="flex space-x-2">
                         <input
@@ -233,4 +231,4 @@ const ChatPanel: React.FC<ChatPanelProps> = ({ isOpen, onClose }) => {
   );
 };
 
-export default ChatPanel;
+export default ChatModal;

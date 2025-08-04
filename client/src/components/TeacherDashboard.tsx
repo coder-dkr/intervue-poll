@@ -128,14 +128,14 @@ const TeacherDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen w-full bg-white">
       <div className="w-full border-b border-[#B6B6B6] p-4">
-        <div className="max-w-4xl m-2 sm:m-10 md:ml-36 md:mt-[3.8rem]">
+        <div className="sm:max-w-4xl m-2 sm:m-10 md:ml-36 md:mt-[3.8rem]">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col justify-between items-start mb-6"
+            className="flex flex-col w-full justify-between items-start mb-6"
           >
             <IntervueHeader />
             <h1 className="text-[40px] leading-[100%] font-bold text-gray-900 mb-2 sora-font">
@@ -209,8 +209,9 @@ const TeacherDashboard: React.FC = () => {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      className="flex items-center space-x-3"
+                      className="flex items-center flex-wrap space-x-3"
                     >
+                      <div  className="flex items-center space-x-3">
                       <div className="flex-shrink-0 w-6 h-6  bg-[linear-gradient(90deg,_#7565D9_0%,_#4D0ACD_100%)] text-white rounded-full flex items-center justify-center text-[11px] leading-[100%] sora-font !font-semibold">
                         {index + 1}
                       </div>
@@ -223,6 +224,7 @@ const TeacherDashboard: React.FC = () => {
                         placeholder={`Option ${index + 1}`}
                         maxLength={100}
                       />
+                      </div>
 
                       <motion.button
                         whileHover={{ scale: 1.05 }}

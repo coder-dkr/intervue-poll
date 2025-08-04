@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Clock, Users } from 'lucide-react';
 import axios from 'axios';
+import ChatModal from './ChatModal';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from "../store/store";
+import { toggleChat } from "../store/slices/chatSlice";
 
 interface PollOption {
   id: string;
@@ -28,7 +32,11 @@ const BASE_URL = import.meta.env.VITE_BACKEND_URL
 
 const PollHistoryView: React.FC<PollHistoryViewProps> = ({ onBack }) => {
   const [polls, setPolls] = useState<Poll[]>([]);
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
+  const { isOpen } = useSelector((state: RootState) => state.chat);
+  const { participants } =
+  useSelector((state: RootState) => state.poll);
 
   useEffect(() => {
     const fetchPollHistory = async () => {
@@ -195,6 +203,23 @@ const PollHistoryView: React.FC<PollHistoryViewProps> = ({ onBack }) => {
           )}
         </div>
       </div>
+
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => dispatch(toggleChat())}
+        className="fixed bottom-12 right-4 sm:right-16 bg-[#5767D0] text-white p-4 rounded-full shadow-lg hover:opacity-90 transition-colors z-30"
+      >
+        <img src="/chaticon.svg" alt="chat icon" className="w-6 h-6" />
+        {participants.length > 0 && (
+          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center">
+            {participants.length}
+          </span>
+        )}
+      </motion.button>
+
+      {/* Chat Panel */}
+      <ChatModal isOpen={isOpen} onClose={() => dispatch(toggleChat())} />
     </div>
   );
 };

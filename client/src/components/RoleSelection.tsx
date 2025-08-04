@@ -40,7 +40,7 @@ const RoleSelection: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-          className="text-[40px] whitespace-nowrap text-gray-900 mb-1 sora-font"
+          className="text-3xl md:text-[40px] md:whitespace-nowrap text-gray-900 mb-4 sora-font"
           >
             Welcome to the <span className="text-black font-semibold">Live Polling System</span>
           </motion.h1>
@@ -49,7 +49,7 @@ const RoleSelection: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="text-[17px] text-[#00000074] mx-auto sora-font"
+            className="text-sm md:text-[17px] text-[#00000074] mx-auto sora-font"
           >
             Please select the role that best describes you to begin using the live polling system
           </motion.p>
@@ -65,8 +65,8 @@ const RoleSelection: React.FC = () => {
             whileHover={{ scale: 1.02 }}
             className={`bg-white rounded-xl p-6 cursor-pointer transition-all border-2 ${
               selectedRole === 'student' 
-                ? 'border-purple-500 shadow-lg' 
-                : 'border-gray-200 hover:border-gray-300'
+                ? 'border-[#1D68BD] border-4 shadow-lg' 
+                : 'border-[#D9D9D9] hover:border-gray-300'
             }`}
             onClick={() => handleRoleSelect('student')}
           >
@@ -86,8 +86,8 @@ const RoleSelection: React.FC = () => {
             whileHover={{ scale: 1.02 }}
             className={`bg-white rounded-xl p-6 cursor-pointer transition-all border-2 ${
               selectedRole === 'teacher' 
-                ? 'border-purple-500 shadow-lg' 
-                : 'border-gray-200 hover:border-gray-300'
+                ? 'border-[#1D68BD] border-4 shadow-lg' 
+                : 'border-[#D9D9D9] hover:border-gray-300'
             }`}
             onClick={() => handleRoleSelect('teacher')}
           >
